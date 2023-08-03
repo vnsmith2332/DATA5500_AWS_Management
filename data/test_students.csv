@@ -1,4 +1,4 @@
-fname,lname,a_number,email
-Victor,Smith,A02305201,vnsmith2332@gmail.com
-Ellie,Phillips,a12345678,vnsmith2332@gmail.com
-Jane,Doe,a87654321,vnsmith2332@gmail.com
+Name, Last Name, First Name, A Number, Email, Section
+Victor Smith, Smith, Victor, A02305201, vnsmith2332@gmail.com, Summer 2023 DATA-5500-IO1
+Ellie Phillips, Phillips, Ellie, A12345678, vnsmith2332@gmail.com, Summer 2023 DATA-5500-IO1
+Jane Doe, Doe, Jane, A87654321, vnsmith2332@gmail.com, Summer 2023 DATA-5500-IO1
