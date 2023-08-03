@@ -7,11 +7,10 @@ def nuke_environments():
     Delete all Cloud9 environments in the account owned by DATA 3500/5500 students.
     Also terminates the EC2 instances on which the environments are running.
     """
-    cloud9_client = boto3.client("cloud9")
-    next_token = ""
-    
     print("Deleting student Cloud9 Environments...")
     
+    cloud9_client = boto3.client("cloud9")
+    next_token = ""
     
     while True:
         # get all environments, get environment details 25 at a time (defualt)
