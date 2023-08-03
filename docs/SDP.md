@@ -17,11 +17,11 @@ terminating a needed EC2 instance or unknowingly utilizing a costly service, for
 * Instructors and TAs typically have full administrative access to students' personal accounts, posing a significant security
 threat after the course is completed
 * Graders must sign in to each account individually to access completed assignments, adding significantly to the amount of time
-spent on grading
+spent grading
 
 Given these issues, we have decided to develop a new approach for the courses, one that will allow students
 to use AWS in the course, while mitigating the drawbacks. A suitable solution will achieve the following:
-1. Instructors and TAs - not students - will have root access to a single AWS account on which student resources live
+1. Instructors and TAs - not students - will have administrative access to a single AWS account on which student resources live
 2. Students will be added as IAM users with console access to the account. They will be added to a `student` group, 
 which has an appropriate permissions policy attached. Some permissions students will need:
    * Creating an EC2 instance
@@ -41,9 +41,28 @@ the policy document is expected to take a considerable amount of time.
 
 ## Design
 
-### Pulling Student Data via Canvas API
-We first approach the issue of constructing appropriate API calls to get the necessary student data for creating users and
-emailing credentials. Instructure Canvas has an API, making this a rather simple task.
+### Getting Student Data
+The following information is needed to create a user for each student and communicate the credentials:
+* First name
+* Last name
+* Email
+* A-number
+
+All of this information is easily accessible via the course roster download option in Canvas.
+This option provides a `.csv` file in the following format:
+```
+Name, Last Name, First Name, A Number, Email, Section
+Molly Alexander, Alexander, Molly, A01285286, a01285286@usu.edu, Summer 2023 DATA-5500-IO1
+Colton Butler, Butler, Colton, A02286233, a02286233@usu.edu, Summer 2023 DATA-5500-IO1
+Hannah Calvin, Calvin, Hannah, A02363685, a02363685@usu.edu, Summer 2023 DATA-5500-IO1
+```
+
+Some preprocessing will need to occur on each line of the file, including:
+* parsing columns for needed information
+* stripping spacing
+
+In the future, we would like to explore using the Canvas API to get this information. Time constraints make this impossible for the time being.
+
 
 ### Creating Student IAM Users
 After retrieving student data, the next task is to create users for the students. This step includes:
@@ -91,7 +110,7 @@ def mail_credentials(user_details: dict):
    Given a dictionary containing an IAM user's information, send the login information to the
    associated student's email
    """
-    parse user_details for username, password, and email
+    parse user_details for username, password, section, and email
     string containing subject
     string containing body
     SES API call to send email to student
@@ -101,8 +120,35 @@ def mail_credentials(user_details: dict):
 At the end of each semester, each IAM user, as well as all resources created by that user, will be deleted. First, all Cloud9
 environments and their associated EC2 instances will be terminated. Then, a second pass will be made to remove all the users.
 
+Resources and users that need to be removed will be indentified by a substring unique to students in the course. In the case of users,
+this substring will be in the username. Consequently, this substring will also be available in the `ownerArn` of any resources that
+should be deleted.
+
 ```python
+def nuke_environments():
+    """
+    Delete all Cloud9 environments in the account owned by DATA 3500/5500 students.
+    Also terminates the EC2 instances on which the environments are running.
+    """
+    create cloud9_client
+
+    get all env ids using list_environments()
+    describe all env using describe_environments(ids)
+    for each account, check ownerArn for student IAM user substring
+        delete env if True
+
+
 def user_nuke()
+    """
+    Delete all IAM users that are student users
+    """
+    creat iam client
+    
+    get all users using list_users()
+    if student_iam_substring in username:
+        delete login profile
+        remove user from student group
+        delete user
 ```
 
 ### Main Module
@@ -118,12 +164,15 @@ def main():
     if create:
         create users with details in csv
     if destroy:
-        destroy users with details in csv
+        destroy users
 ```
 ## Implementation
 Some notes on implementation:
 * Added exception handling to `user_factory()` to handle the case that two students exist with the same first and last name
-* Disabled password policy in AWS account for IAM users to enable easier password generation
+* Added an arbitrary fixed substring to the beginning of each password to ensure the password satisfies the account's password requirements
 * Removal from SES sandbox must be requested to send emails to unverified addresses
 
 ## Testing
+
+
+## Deployment
