@@ -19,7 +19,6 @@ __pycache__
 *.pyc
 
 # Other files to ignore for good practice
-*.csv
 *.zip
 *.bak
 *.png
