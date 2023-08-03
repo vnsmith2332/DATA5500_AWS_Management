@@ -1,5 +1,5 @@
 import boto3
-from user_factory import STUDENT_IAM_SUBSTRING, STUDENT_GROUP_NAME
+from constants import STUDENT_IAM_SUBSTRING, STUDENT_GROUP_NAME
 
 
 def nuke_environments():

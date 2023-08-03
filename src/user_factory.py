@@ -1,11 +1,7 @@
 import boto3
 import string
 import random
-
-# substring to identify student users and resources
-STUDENT_IAM_SUBSTRING = "-DATA-500"
-# name of group to which all students are added
-STUDENT_GROUP_NAME = "DATA3500-5500-students"
+from constants import STUDENT_GROUP_NAME, STUDENT_IAM_SUBSTRING
 
 
 def user_factory(first_name: str, last_name: str, a_number: str, email: str, section: str) -> dict:

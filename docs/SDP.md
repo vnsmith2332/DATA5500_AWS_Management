@@ -171,6 +171,7 @@ Some notes on implementation:
 * Added exception handling to `user_factory()` to handle the case that two students exist with the same first and last name
 * Added an arbitrary fixed substring to the beginning of each password to ensure the password satisfies the account's password requirements
 * Removal from SES sandbox must be requested to send emails to unverified addresses
+* Added `src/constants.py` to store all constants needed by other files. This provides a central location where these can be easily updated if needed.
 
 ## Testing
 

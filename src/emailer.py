@@ -1,13 +1,11 @@
 import boto3
+from constants import SENDER_EMAIL, AWS_ROOT_ACCT_ID
 
 def send_credentials(user_details: dict):
     """
     Given a dictionary containing an IAM user's information, send the login information to the
     associated student's email
     """
-    SENDER_EMAIL = "data5500.credentials@gmail.com"
-    AWS_ROOT_ACCT_ID = "141016442588"
-
     recipient_email = user_details["User"]["Email"]
     username = user_details["User"]["UserName"]
     password = user_details["User"]["Password"]
