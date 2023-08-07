@@ -98,7 +98,10 @@
         {
             "Sid": "DenyRegions",
             "Effect": "Deny",
-            "Action": "*",
+            "Action": [
+                "ec2:*",
+                "cloud9:*"
+            ],
             "Resource": "*",
             "Condition": {
                 "StringNotEquals": {
