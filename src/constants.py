@@ -1,5 +1,6 @@
 # substring to identify student users and resources
-STUDENT_IAM_SUBSTRING = "-DATA-500"
+# TODO: make "-DATA-500" --> ".DATA-500"
+STUDENT_IAM_SUBSTRING = ".DATA-500"
 # name of group to which all students are added
 STUDENT_GROUP_NAME = "DATA3500-5500-students"
 # email to send credentials from
@@ -14,3 +15,10 @@ COURSES = {
     "5500": "DATA 5500",
     "6500": "DATA 6500"
 }
+
+
+
+
+
+# TODO: region should be "us-west-1"
+# TODO: why did 2 users not get deleted?
