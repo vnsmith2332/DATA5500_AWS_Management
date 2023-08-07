@@ -8,3 +8,9 @@ SENDER_EMAIL = "data5500.credentials@gmail.com"
 AWS_ROOT_ACCT_ID = "141016442588"
 # max emails per second allotted by SES
 MAX_SEND_RATE = 14
+# course numbers for student emails, to be determined by parsing section name
+COURSES = {
+    "3500": "DATA 3500",
+    "5500": "DATA 5500",
+    "6500": "DATA 6500"
+}
