@@ -105,7 +105,7 @@
             "Resource": "*",
             "Condition": {
                 "StringNotEquals": {
-                    "aws:RequestedRegion": "us-west-2"
+                    "aws:RequestedRegion": "us-west-1"
                 }
             }
         }
