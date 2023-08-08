@@ -44,11 +44,11 @@ if __name__ == "__main__":
     Send a test email to a test student; user details are arbitrary
     """
     user_details = {"User":
-                        {"Email": "vnsmith2332@gmail.com",
-                         "UserName": "victor.smith",
+                        {"Email": "a02286233@usu.edu",
+                         "UserName": "colton.butler",
                          "Password": "password123",
-                         "FirstName": "Victor",
-                         "Section": "DATA-5500-IO1"
+                         "FirstName": "Colton",
+                         "Section": "DATA 5500"
                          }
                     }
 
