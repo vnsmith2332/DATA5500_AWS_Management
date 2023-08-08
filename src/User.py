@@ -47,7 +47,7 @@ class User():
         return self.__course
         
         
-    def user_factory(self):
+    def create_user(self):
         iam_client = boto3.client("iam")
         
         # creating the user

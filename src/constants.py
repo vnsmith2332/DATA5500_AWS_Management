@@ -20,5 +20,5 @@ COURSES = {
 
 
 
-# TODO: region should be "us-west-1"
+
 # TODO: why did 2 users not get deleted?
