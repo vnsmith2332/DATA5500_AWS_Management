@@ -50,7 +50,8 @@ def user_factory(first_name: str, last_name: str, a_number: str, email: str, sec
     user_details["User"]["FirstName"] = first_name
     user_details["User"]["Email"] = email
     user_details["User"]["Section"] = section
-
+    
+    print(f"Created user: {user_details['User']['UserName']}")
     return user_details
 
 
