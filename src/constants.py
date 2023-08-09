@@ -15,8 +15,8 @@ COURSES = {
     "5500": "DATA 5500",
     "6500": "DATA 6500"
 }
-
-
+# beginning password for all students
+PASSWORD = "H8P+0Ar1@"
 
 
 
