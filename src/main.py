@@ -1,8 +1,6 @@
 import sys
 from time import sleep
 
-from emailer import *
-from user_factory import *
 from user_nuke import *
 from constants import MAX_SEND_RATE
 from usage import usage
@@ -41,7 +39,7 @@ def main():
                 values = line.split(",")
                 user = User(first_name=values[2], last_name=values[1], a_number=values[3], email=values[4], section=values[5])
                 user.create_user()
-                user.send_credentials()
+                # user.send_credentials()
                 emails_sent += 1
             print("All users created successfully!")
             
