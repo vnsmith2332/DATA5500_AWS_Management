@@ -17,8 +17,3 @@ COURSES = {
 }
 # beginning password for all students
 PASSWORD = "H8P+0Ar1@"
-
-
-
-
-# TODO: why did 2 users not get deleted?
