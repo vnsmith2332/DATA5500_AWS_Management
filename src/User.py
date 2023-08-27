@@ -1,6 +1,5 @@
 import boto3
 import string
-import random
 from constants import STUDENT_GROUP_NAME, STUDENT_IAM_SUBSTRING, SENDER_EMAIL, AWS_ROOT_ACCT_ID, COURSES, PASSWORD
 
 
@@ -18,7 +17,12 @@ class User():
                 self.__course = COURSES[course]
                 break
           
-            
+    
+    
+    def get_arn(self):
+        return self.__user_arn
+        
+        
     def get_first_name(self):
         return self.__first_name
         
@@ -62,36 +66,40 @@ class User():
             }
         ]
         
-        iam_client.create_user(UserName=self.__username, Tags=tags)
+        response = iam_client.create_user(UserName=self.__username, Tags=tags)
         iam_client.create_login_profile(UserName=self.__username, Password=self.__password, PasswordResetRequired=True)
         iam_client.add_user_to_group(GroupName=STUDENT_GROUP_NAME, UserName=self.__username)
         print(f"Created user: {self.__username}")
         
+        self.__user_arn = response["User"]["Arn"]
         
-    def send_credentials(self):
-        ses_client = boto3.client("ses")
         
-        subject = f"{self.__course} AWS Credentials"
-        body = f"Hi {self.__first_name.capitalize()},\n\nWelcome to {self.__course}! We're excited to have you in the course and can't wait to get to know you better!\n\nThis course utilizes the cloud platform Amazon Web Services (AWS) and its IDE, Cloud9. In order to allow you to access this service, we have created an account for you. All the information you need to sign in can be found below:\n\nLogin Page: https://{AWS_ROOT_ACCT_ID}.signin.aws.amazon.com/console\nUsername: {self.__username}\nPassword: {self.__password}\n\nAfter you access your account, you will be prompted to reset your password; please choose a secure password and do not share it with others. Your professor will provide further instructions on how to setup your Cloud9 environment. If you have any trouble logging in, please reach out to the professor and/or TAs.\n\nAgain, welcome to the course! Here's to a great semester!\n\nDATA 3500/5500 Team"
+    def create_cloud9_env(self):
+        """
+        Create a cloud9 environment on a t2.micro instance that belongs
+        to the user
+        """
+        cloud9_client = boto3.client("cloud9")
+        print("\n"+self.__user_arn)
+        response = cloud9_client.create_environment_ec2(
+            name=f'{self.__first_name}-{self.__last_name}-{self.__course}',
+            instanceType='t2.micro',
+            automaticStopTimeMinutes=30,
+            ownerArn=self.__user_arn,
+            connectionType='CONNECT_SSH')
+            
+        self.__cloud9_env_id = response["environmentId"]
+        print("created environment")
+            
         
-        ses_client.send_email(
-            Source=SENDER_EMAIL,
-            Destination={
-                'ToAddresses': [
-                    self.__email
-                ]
-            },
-            Message={
-                'Subject': {
-                    'Data': subject
-                },
-                'Body': {
-                    'Text': {
-                        'Data': body
-                    }
-                }
-            }
-        )
+    def share_env(self, user_arn):
+        """
+        Share the user's cloud9 environment with the given user_arn
+        """
+        cloud9_client = boto3.client("cloud9")
         
-        print(f"Sent credentials for {self.__username} to {self.__email}\n")
-        
+        cloud9_client.create_environment_membership(
+            environmentId=self.__cloud9_env_id,
+            userArn=user_arn,
+            permissions='read-write')
+        print("shared environment")

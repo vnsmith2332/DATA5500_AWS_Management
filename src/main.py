@@ -2,7 +2,7 @@ import sys
 from time import sleep
 
 from user_nuke import *
-from constants import MAX_SEND_RATE
+from constants import MAX_SEND_RATE, ROOT_ARN, GRADER_ARN
 from usage import usage
 from User import User
 
@@ -28,20 +28,26 @@ def main():
     elif sys.argv[1].lower() == "create":
         if len(sys.argv) < 3:
             usage(error="insufficient_args")
+            
+        # create a user for each student in the file
         with open(sys.argv[2]) as f:
             f.readline()
-            emails_sent = 0
+            users = []
             for line in f:
-                # limit send rate to MAX_SEND_RATE emails per second
-                if emails_sent % MAX_SEND_RATE == 0:
-                    sleep(1)
                 line = line.strip().lower().replace(" ", "")
                 values = line.split(",")
                 user = User(first_name=values[2], last_name=values[1], a_number=values[3], email=values[4], section=values[5])
-                user.create_user()
-                # user.send_credentials()
-                emails_sent += 1
-            print("All users created successfully!")
+                users.append(user.create_user())
+                
+        # sleep to allow users to sync in AWS
+        sleep(30)
+        
+        # provision environments for each user
+        for user in users:
+            user.create_cloud9_env()
+            user.share_env(user_arn=ROOT_ARN)
+            user.share_env(user_arn=GRADER_ARN)
+        print("All users created successfully!")
             
     else:
         usage(error="invalid_option", additive=sys.argv[1])
