@@ -75,7 +75,7 @@ class User():
             print(f"Created user: {self.__username}")
         
         # case that user already exists
-        except iam_client.exceptions.EntityAlreadyExistsException as e:
+        except iam_client.exceptions.EntityAlreadyExistsException:
             print(f"User {self.__username} already exists.")
         
     def create_cloud9_env(self):
