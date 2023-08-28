@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import string
 from constants import STUDENT_GROUP_NAME, STUDENT_IAM_SUBSTRING, SENDER_EMAIL, AWS_ROOT_ACCT_ID, COURSES, PASSWORD
 
@@ -66,13 +67,17 @@ class User():
             }
         ]
         
-        response = iam_client.create_user(UserName=self.__username, Tags=tags)
-        iam_client.create_login_profile(UserName=self.__username, Password=self.__password, PasswordResetRequired=True)
-        iam_client.add_user_to_group(GroupName=STUDENT_GROUP_NAME, UserName=self.__username)
-        print(f"Created user: {self.__username}")
+        try:
+            response = iam_client.create_user(UserName=self.__username, Tags=tags)
+            iam_client.create_login_profile(UserName=self.__username, Password=self.__password, PasswordResetRequired=True)
+            iam_client.add_user_to_group(GroupName=STUDENT_GROUP_NAME, UserName=self.__username)
+            print(f"Created user: {self.__username}")
+            
+            self.__user_arn = response["User"]["Arn"]
         
-        self.__user_arn = response["User"]["Arn"]
-        
+        # case that user already exists
+        except botocore.exceptions.EntityAlreadyExistsException as e:
+            print(f"User {self.__username} already exists.")
         
     def create_cloud9_env(self):
         """
