@@ -12,6 +12,7 @@ class User():
         self.__email = email.lower()
         self.__username = self.__first_name + "." + self.__last_name + STUDENT_IAM_SUBSTRING
         self.__password = PASSWORD
+        self.__user_arn = f"arn:aws:iam::141016442588:user/{self.__username}"
         
         for course in COURSES.keys():
             if course in section:
@@ -72,11 +73,9 @@ class User():
             iam_client.create_login_profile(UserName=self.__username, Password=self.__password, PasswordResetRequired=True)
             iam_client.add_user_to_group(GroupName=STUDENT_GROUP_NAME, UserName=self.__username)
             print(f"Created user: {self.__username}")
-            
-            self.__user_arn = response["User"]["Arn"]
         
         # case that user already exists
-        except botocore.exceptions.EntityAlreadyExistsException as e:
+        except iam_client.exceptions.EntityAlreadyExistsException as e:
             print(f"User {self.__username} already exists.")
         
     def create_cloud9_env(self):

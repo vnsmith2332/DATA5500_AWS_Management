@@ -37,7 +37,8 @@ def main():
                 line = line.strip().lower().replace(" ", "")
                 values = line.split(",")
                 user = User(first_name=values[2], last_name=values[1], a_number=values[3], email=values[4], section=values[5])
-                users.append(user.create_user())
+                user.create_user()
+                users.append(user)
                 
         # sleep to allow users to sync in AWS
         sleep(30)
